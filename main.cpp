@@ -7,23 +7,19 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-//    MainWindow w;
-//    w.show();
+
 
     Qylon::GraphicsWidget *widget = new Qylon::GraphicsWidget;
     widget->initialize();
-    widget->setSizeIncrement(400, 300);
-    widget->show();
 
     Qylon::Qylon q;
-    auto val = q.addVTools();
-    QObject::connect(val, &Qylon::vTools::finished, [=](){
-        qDebug() << "get image";
-        widget->setImage(val->getImage());
-    });
+    auto vTools = q.addVTools();
 
-    val->loadRecipe("/home/minwoo/Downloads/vitdor.precipe");
-    val->startRecipe();
+    MainWindow w;
+    w.setWidget(widget);
+    w.setVTools(vTools);
+    w.resize(1000, 800);
+    w.show();
 
 
     return a.exec();
