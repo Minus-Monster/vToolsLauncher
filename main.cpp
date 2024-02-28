@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-
+    Q_INIT_RESOURCE(Resources);
 
     Qylon::GraphicsWidget *widget = new Qylon::GraphicsWidget;
     widget->initialize();
