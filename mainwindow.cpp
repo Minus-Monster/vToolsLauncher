@@ -14,7 +14,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionLoad_Recipe, &QAction::triggered, this, [=](){
         auto file = QFileDialog::getOpenFileName(this, "Load a pylon recipe", QDir::currentPath(), "*.precipe" );
-        vTools->loadRecipe(file);
+        if(file.isEmpty()) return;
+        auto val = vTools->loadRecipe(file);
+        if(val){
+            QMessageBox::information(this, "Basler vLauncher",  "Recipe is successfully loaded");
+        }else{
+            QMessageBox::critical(this, "Basler vLauncher", "Recipe loading is failed. Check the resources that are needed to run.");
+        }
     });
     connect(ui->actionContinuous, &QAction::triggered, this, [=](){
         vTools->startRecipe();
