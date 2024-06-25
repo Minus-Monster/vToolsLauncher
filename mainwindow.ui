@@ -3,7 +3,7 @@
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
   <property name="windowModality">
-   <enum>Qt::ApplicationModal</enum>
+   <enum>Qt::WindowModal</enum>
   </property>
   <property name="geometry">
    <rect>
@@ -14,13 +14,16 @@
    </rect>
   </property>
   <property name="contextMenuPolicy">
-   <enum>Qt::NoContextMenu</enum>
+   <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <property name="tabShape">
    <enum>QTabWidget::Rounded</enum>
@@ -75,9 +78,52 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QMenuBar{
+	background-color:white;
+}
+QMenuBar::item{
+	background-color:white;
+}</string>
+   </property>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <addaction name="actionResults"/>
+   </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionLoad_Recipe"/>
+   </widget>
+   <widget class="QMenu" name="menuSequence">
+    <property name="title">
+     <string>Sequence</string>
+    </property>
+    <addaction name="actionContinuous"/>
+    <addaction name="actionStop"/>
+   </widget>
+   <widget class="QMenu" name="menuInformation">
+    <property name="title">
+     <string>Info</string>
+    </property>
+    <addaction name="actionAbout_vLauncher"/>
+    <addaction name="actionAbout_Qt"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuSequence"/>
+   <addaction name="menuWindow"/>
+   <addaction name="menuInformation"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
    <property name="font">
     <font>
      <family>맑은 고딕 Semilight</family>
@@ -87,25 +133,40 @@
     <enum>Qt::NoContextMenu</enum>
    </property>
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Recipe Toolbar</string>
    </property>
    <property name="layoutDirection">
     <enum>Qt::LeftToRight</enum>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QToolBar{
+background-color: rgb(255, 255, 255);
+}
+QToolButton{
+margin-left:5px;
+
+}
+QToolBox::tab {
+
+}
+
+QToolBox::tab:selected{
+}</string>
+   </property>
    <property name="movable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="allowedAreas">
-    <set>Qt::AllToolBarAreas</set>
+    <set>Qt::NoToolBarArea</set>
    </property>
    <property name="iconSize">
     <size>
-     <width>20</width>
-     <height>20</height>
+     <width>24</width>
+     <height>24</height>
     </size>
    </property>
    <property name="toolButtonStyle">
-    <enum>Qt::ToolButtonTextUnderIcon</enum>
+    <enum>Qt::ToolButtonIconOnly</enum>
    </property>
    <property name="floatable">
     <bool>true</bool>
@@ -121,11 +182,13 @@
    <addaction name="actionContinuous"/>
    <addaction name="actionStop"/>
    <addaction name="separator"/>
+   <addaction name="actionRecipeConfiguration"/>
    <addaction name="actionSerial"/>
-   <addaction name="actionEthernet"/>
-   <addaction name="separator"/>
   </widget>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="dockWidget_results">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="minimumSize">
     <size>
      <width>70</width>
@@ -164,16 +227,19 @@
   <action name="actionLoad_Recipe">
    <property name="icon">
     <iconset resource="../Qylon/Resources.qrc">
-     <normaloff>:/Resources/Icon/icons8-file-48.png</normaloff>:/Resources/Icon/icons8-file-48.png</iconset>
+     <normaloff>:/Resources/Icon/icons8-opened-folder-48.png</normaloff>:/Resources/Icon/icons8-opened-folder-48.png</iconset>
    </property>
    <property name="text">
-    <string>Load</string>
+    <string>Load recipe</string>
    </property>
   </action>
   <action name="actionContinuous">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../Qylon/Resources.qrc">
-     <normaloff>:/Resources/Icon/icons8-play-48-2.png</normaloff>:/Resources/Icon/icons8-play-48-2.png</iconset>
+     <normaloff>:/Resources/Icon/icons8-play-48.png</normaloff>:/Resources/Icon/icons8-play-48.png</iconset>
    </property>
    <property name="text">
     <string>Live</string>
@@ -183,9 +249,12 @@
    </property>
   </action>
   <action name="actionStop">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../Qylon/Resources.qrc">
-     <normaloff>:/Resources/Icon/icons8-stop-circled-48.png</normaloff>:/Resources/Icon/icons8-stop-circled-48.png</iconset>
+     <normaloff>:/Resources/Icon/icons8-stop-48.png</normaloff>:/Resources/Icon/icons8-stop-48.png</iconset>
    </property>
    <property name="text">
     <string>Stop</string>
@@ -195,6 +264,9 @@
    </property>
   </action>
   <action name="actionSerial">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../Qylon/Resources.qrc">
      <normaloff>:/Resources/Icon/icons8-rs-232-male-48.png</normaloff>:/Resources/Icon/icons8-rs-232-male-48.png</iconset>
@@ -209,13 +281,52 @@
   <action name="actionEthernet">
    <property name="icon">
     <iconset resource="../Qylon/Resources.qrc">
-     <normaloff>:/Resources/Icon/icons8-rj45-48.png</normaloff>:/Resources/Icon/icons8-rj45-48.png</iconset>
+     <normaloff>:/Resources/Icon/icons8-ethernet-48.png</normaloff>:/Resources/Icon/icons8-ethernet-48.png</iconset>
    </property>
    <property name="text">
     <string>Ethernet</string>
    </property>
    <property name="toolTip">
     <string>Socket Communication</string>
+   </property>
+  </action>
+  <action name="actionRecipeConfiguration">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Qylon/Resources.qrc">
+     <normaloff>:/Resources/Icon/icons8-recipe-48.png</normaloff>:/Resources/Icon/icons8-recipe-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>RecipeConfiguration</string>
+   </property>
+   <property name="toolTip">
+    <string>Recipe Configuration</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionResults">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Results</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionAbout_vLauncher">
+   <property name="text">
+    <string>About vLauncher</string>
    </property>
   </action>
  </widget>
