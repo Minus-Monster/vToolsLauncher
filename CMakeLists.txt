@@ -71,3 +71,8 @@ endif()
 
 add_subdirectory("../Qylon" Qylon)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qylon)
+if(WIN32)
+    set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+    target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Qylon/Resources/Icon.ico)
+endif()

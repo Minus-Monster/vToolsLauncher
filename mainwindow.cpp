@@ -3,17 +3,18 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTime>
-#include "Processing/ImageTools.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setWindowTitle("Basler vLauncher");
+    setWindowTitle("Basler vLauncher ver0.1 [Preview]");
     setWindowIcon(QIcon(":/Resources/Icon.png"));
 
-    // ui->dockWidget_results->setHidden(true);
+    console = new Qylon::Console(this);
+    ui->dockWidget_results->setWidget(console);
+
     ui->actionResults->setChecked(true);
     connect(ui->actionResults, &QAction::triggered, this, [=](bool on){
         ui->dockWidget_results->setHidden(!on);
@@ -46,12 +47,11 @@ MainWindow::MainWindow(QWidget *parent)
             this->ui->actionRecipeConfiguration->setEnabled(true);
         }else{
             box->setStandardButtons(QMessageBox::Ok);
-            box->setText("Recipe loading is failed. Check the resources that are needed to run");
+            box->setIcon(QMessageBox::Critical);
+            box->setText("Recipe loading is failed. \n" + vTools->getLastError());
         }
-        widget->clear();
-        widget->setImage(QImage());
-        widget->setLogo(true);
-
+        widget->setCrossHair(false);
+        widget->reset();
     });
     connect(ui->actionContinuous, &QAction::triggered, this, [=](){
         widget->setFPSEnable(true);
@@ -106,21 +106,28 @@ void MainWindow::setWidget(QWidget *wg)
 void MainWindow::setVTools(Qylon::vTools *vT)
 {
     vTools = vT;
-    QObject::connect(vTools, &Qylon::vTools::finished, this, [this](){
-        widget->removeAllGraphicsItem();
-        if(vTools->getImages().size()!=0){
-            auto outImg = vTools->getImage();
+    QObject::connect(vTools, &Qylon::vTools::finishedProcessing, this, [this](){
+        QMutexLocker locker(&mutex);
+        widget->clear();
+        auto result = vTools->getResult();
+
+        auto images = result.images;
+        auto items = result.items;
+        auto strings = result.strings;
+
+        if(!images.isEmpty()){
+            auto outImg = vTools->getSelectedImage(images);
             widget->setImage(outImg);
         }
-        if(vTools->getItems().size() !=0){
-            for(int i=0; i<vTools->getItems().size(); ++i){
-                auto item = vTools->getItems().at(i).second;
-                widget->drawGraphicsItem(item);
+        if(!items.isEmpty()){
+            for(int i=0; i<items.size(); ++i){
+                auto item = items.at(i).second;
+                QGraphicsItem* currentItem = const_cast<QGraphicsItem*>(item);
+                widget->drawGraphicsItem(currentItem);
             }
         }
-
-        for(int i=0; i<vTools->getOutputText().size(); ++i){
-            setMessage(vTools->getOutputText().at(i));
+        if(!strings.isEmpty()){
+            setMessage(vTools->getParseredString(strings));
         }
     });
 }
@@ -130,8 +137,10 @@ void MainWindow::setMessage(QString message)
     if(message.isEmpty()) return;
 
     QString output("[" + QTime::currentTime().toString() + "] ");
-    ui->textEdit->append(output + message);
-    ui->textEdit->moveCursor(QTextCursor::End);
-    if(serial != nullptr) serial->sendData(message);
+    console->append(output+message);
+
+    if(serial != nullptr){
+        if(serial->isOpen()) serial->sendData(message);
+    }
 }
 

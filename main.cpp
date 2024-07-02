@@ -21,8 +21,6 @@ int main(int argc, char *argv[])
     Qylon::Qylon q;
     auto vTools = q.addVTools();
 
-
-
     MainWindow w;
     window = &w;
     // qInstallMessageHandler(setDebugMessage);

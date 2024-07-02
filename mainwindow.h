@@ -2,10 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "Modules/Console.h"
 #include "Modules/GraphicsWidget.h"
 #include "Processing/vTools.h"
 #include "Processing/SerialCommunication.h"
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -27,6 +27,9 @@ private:
     Ui::MainWindow *ui;
     Qylon::vTools *vTools;
     Qylon::GraphicsWidget *widget;
+    Qylon::Console *console;
     Qylon::SerialCommunication *serial = nullptr;
+
+    QMutex mutex;
 };
 #endif // MAINWINDOW_H
