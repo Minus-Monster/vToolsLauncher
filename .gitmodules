@@ -1,0 +1,3 @@
+[submodule "Qylon"]
+	path = Qylon
+	url = https://github.com/minus-monster/Qylon.git
