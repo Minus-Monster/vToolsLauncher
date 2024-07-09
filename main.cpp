@@ -13,6 +13,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Q_INIT_RESOURCE(Resources);
+    QString pluginPath = QApplication::applicationDirPath() + "/plugins";
+    QApplication::addLibraryPath(pluginPath);
+    qDebug() << "Plugin Path:" << pluginPath;
 
     Qylon::GraphicsWidget *widget = new Qylon::GraphicsWidget;
     widget->initialize();
@@ -28,6 +31,8 @@ int main(int argc, char *argv[])
     w.setWidget(widget);
     w.setVTools(vTools);
     w.resize(1000, 800);
+
+
     w.show();
 
 

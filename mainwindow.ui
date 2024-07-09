@@ -79,12 +79,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">QMenuBar{
-	background-color:white;
-}
-QMenuBar::item{
-	background-color:white;
-}</string>
+    <string notr="true"/>
    </property>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -139,19 +134,7 @@ QMenuBar::item{
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">QToolBar{
-background-color: rgb(255, 255, 255);
-}
-QToolButton{
-margin-left:5px;
-
-}
-QToolBox::tab {
-
-}
-
-QToolBox::tab:selected{
-}</string>
+    <string notr="true"/>
    </property>
    <property name="movable">
     <bool>false</bool>

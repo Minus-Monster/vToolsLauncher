@@ -3,6 +3,8 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTime>
+#include <QGuiApplication>
+#include <QStyleHints>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -41,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
         auto val = vTools->loadRecipe(file);
         if(val){
             box->setStandardButtons(QMessageBox::Ok);
-            box->setText("Recipe is successfully loaded");
+            box->setText("Recipe is successfully loaded.");
             this->ui->actionContinuous->setEnabled(true);
             this->ui->actionSerial->setEnabled(true);
             this->ui->actionRecipeConfiguration->setEnabled(true);
@@ -90,6 +92,24 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionAbout_Qt, &QAction::triggered, this, [=](){
         QMessageBox::aboutQt(this, "Basler vLauncher");
     });
+
+
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+    Qt::ColorScheme scheme = QGuiApplication::styleHints()->colorScheme();
+    if(scheme == Qt::ColorScheme::Light){
+        ui->menubar->setStyleSheet("QMenuBar{ background-color:white;}"
+                                   "QMenuBar::item{ background-color:white;}"
+                                   );
+        ui->toolBar->setStyleSheet("QToolBar{background-color: rgb(255, 255, 255);}"
+                                   "QToolButton{margin-left:5px;}");
+    }
+#else
+    ui->menubar->setStyleSheet("QMenuBar{ background-color:white;}"
+                               "QMenuBar::item{ background-color:white;}"
+                               );
+    ui->toolBar->setStyleSheet("QToolBar{background-color: rgb(255, 255, 255);}"
+                               "QToolButton{margin-left:5px;}");
+#endif
 }
 
 MainWindow::~MainWindow()
