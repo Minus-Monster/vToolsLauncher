@@ -1,6 +1,6 @@
 
 
-<img src="https://github.com/Minus-Monster/vToolsLauncher/blob/main/vLauncher.png">
+<img src="https://github.com/Minus-Monster/vToolsLauncher/blob/main/Sample.png">
 
 # **Basler vLauncher** #
 This project is designed to make pylon vTools easier to use.
