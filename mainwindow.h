@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSplitter>
 #include "Modules/Console.h"
 #include "Modules/GraphicsWidget.h"
 #include "Processing/vTools.h"
@@ -17,7 +18,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void setWidget(QWidget *wg);
     void setVTools(Qylon::vTools *vT);
 
 public slots:
@@ -25,8 +25,11 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
+    QSplitter *splitter;
     Qylon::vTools *vTools;
-    Qylon::GraphicsWidget *widget;
+    QList<Qylon::GraphicsWidget*> widgets;
+    Qylon::GraphicsWidget* currentWidget;
+
     Qylon::Console *console;
     Qylon::SerialCommunication *serial = nullptr;
 

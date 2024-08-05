@@ -69,7 +69,7 @@ if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(vToolsLauncher)
 endif()
 
-add_subdirectory("./Qylon" Qylon)
+add_subdirectory("../Qylon" Qylon)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qylon)
 if(WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)

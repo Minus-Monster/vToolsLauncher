@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "Processing/ImageTools.h"
 #include <QFileDialog>
 #include <QDir>
 #include <QTime>
@@ -8,11 +9,29 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow), splitter(new QSplitter(Qt::Horizontal))
 {
     ui->setupUi(this);
     setWindowTitle("Basler vLauncher ver0.1 [Preview]");
     setWindowIcon(QIcon(":/Resources/Icon.png"));
+
+    auto mainWidget = new Qylon::GraphicsWidget;
+    widgets.push_back(mainWidget);
+    splitter->addWidget(mainWidget);
+    ui->horizontalLayout->addWidget(splitter);
+
+    connect(ui->actionSub_window, &QAction::toggled, this, [=](bool on){
+        if(on){
+            auto newWidget = new Qylon::GraphicsWidget;
+            widgets.push_back(newWidget);
+            splitter->addWidget(newWidget);
+        }else{
+            auto widget = widgets.back();
+            widgets.pop_back();
+            widget->hide();
+            widget->deleteLater();
+        }
+    });
 
     console = new Qylon::Console(this);
     ui->dockWidget_results->setWidget(console);
@@ -37,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         box->show();
         QEventLoop loop;
-        QTimer::singleShot(500, &loop, &QEventLoop::quit);
+        QTimer::singleShot(50, &loop, &QEventLoop::quit);
         loop.exec();
 
         auto val = vTools->loadRecipe(file);
@@ -52,11 +71,15 @@ MainWindow::MainWindow(QWidget *parent)
             box->setIcon(QMessageBox::Critical);
             box->setText("Recipe loading is failed. \n" + vTools->getLastError());
         }
-        widget->setCrossHair(false);
-        widget->reset();
+        for(int i=0; i<widgets.size(); ++i){
+            widgets.at(i)->setCrossHair(false);
+            widgets.at(i)->reset();
+        }
     });
     connect(ui->actionContinuous, &QAction::triggered, this, [=](){
-        widget->setFPSEnable(true);
+        for(int i=0; i<widgets.size(); ++i){
+            widgets.at(i)->setFPSEnable(true);
+        }
         this->ui->actionContinuous->setEnabled(false);
         this->ui->actionStop->setEnabled(true);
         vTools->startRecipe();
@@ -65,7 +88,9 @@ MainWindow::MainWindow(QWidget *parent)
         vTools->stopRecipe();
         this->ui->actionContinuous->setEnabled(true);
         this->ui->actionStop->setEnabled(false);
-        widget->setFPSEnable(false);
+        for(int i=0; i<widgets.size(); ++i){
+            widgets.at(i)->setFPSEnable(false);
+        }
     });
     connect(ui->actionRecipeConfiguration, &QAction::triggered, this, [=](){
         vTools->getWidget()->show();
@@ -117,18 +142,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setWidget(QWidget *wg)
-{
-    widget = reinterpret_cast<Qylon::GraphicsWidget*>(wg);
-    ui->formLayout->addRow(wg);
-}
-
 void MainWindow::setVTools(Qylon::vTools *vT)
 {
     vTools = vT;
     QObject::connect(vTools, &Qylon::vTools::finishedProcessing, this, [this](){
         QMutexLocker locker(&mutex);
-        widget->clear();
+        for(int i=0; i<widgets.size(); ++i){
+            widgets.at(i)->clear();
+        }
         auto result = vTools->getResult();
 
         auto images = result.images;
@@ -137,13 +158,23 @@ void MainWindow::setVTools(Qylon::vTools *vT)
 
         if(!images.isEmpty()){
             auto outImg = vTools->getSelectedImage(images);
-            widget->setImage(outImg);
+            if(images.size() > 1){
+                for(int j=0; j<widgets.size(); ++j){
+                    widgets.at(j)->setImage(Qylon::convertPylonImageToQImage(images.at(j).second));
+                }
+            }else{
+                for(int j=0; j<widgets.size(); ++j){
+                    widgets.at(j)->setImage(outImg);
+                }
+            }
         }
         if(!items.isEmpty()){
             for(int i=0; i<items.size(); ++i){
                 auto item = items.at(i).second;
                 QGraphicsItem* currentItem = const_cast<QGraphicsItem*>(item);
-                widget->drawGraphicsItem(currentItem);
+                for(int j=0; j<widgets.size(); ++j){
+                    widgets.at(j)->drawGraphicsItem(currentItem);
+                }
             }
         }
         if(!strings.isEmpty()){
