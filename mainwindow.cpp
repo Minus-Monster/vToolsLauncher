@@ -11,7 +11,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setWindowTitle("Basler vLauncher ver0.1 [Preview]");
+    widget = ui->widget;
+    widget->initialize();
+
+    setWindowTitle("Basler vLauncher");
     setWindowIcon(QIcon(":/Resources/Icon.png"));
 
     console = new Qylon::Console(this);
@@ -115,12 +118,6 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::setWidget(QWidget *wg)
-{
-    widget = reinterpret_cast<Qylon::GraphicsWidget*>(wg);
-    ui->formLayout->addRow(wg);
 }
 
 void MainWindow::setVTools(Qylon::vTools *vT)

@@ -17,7 +17,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void setWidget(QWidget *wg);
     void setVTools(Qylon::vTools *vT);
 
 public slots:

@@ -2,7 +2,6 @@
 
 #include <QApplication>
 #include <Qylon.h>
-#include "Modules/GraphicsWidget.h"
 
 MainWindow* window = nullptr;
 void setDebugMessage(QtMsgType, const QMessageLogContext &, const QString &msg)
@@ -17,10 +16,6 @@ int main(int argc, char *argv[])
     QApplication::addLibraryPath(pluginPath);
     qDebug() << "Plugin Path:" << pluginPath;
 
-    Qylon::GraphicsWidget *widget = new Qylon::GraphicsWidget;
-    widget->initialize();
-
-
     Qylon::Qylon q;
     auto vTools = q.addVTools();
 
@@ -28,7 +23,6 @@ int main(int argc, char *argv[])
     window = &w;
     // qInstallMessageHandler(setDebugMessage);
 
-    w.setWidget(widget);
     w.setVTools(vTools);
     w.resize(1000, 800);
 
